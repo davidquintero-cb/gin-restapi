@@ -24,7 +24,7 @@ func main() {
 	userRoutes.GET("/", GetUsers)
 	userRoutes.POST("/", CreateUser)
 	userRoutes.PUT("/:id", EditUser) // PUT /users/355=sdfsfgg=9475
-	// localhost/users/
+	userRoutes.DELETE("/:id", DeleteUser)
 
 	if err := r.Run(":5000"); err != nil {
 		log.Fatal(err.Error())
@@ -89,4 +89,24 @@ func EditUser(c *gin.Context) {
 		"error":   true,
 		"message": "invalid uuid",
 	})
+}
+
+func DeleteUser(c *gin.Context) {
+	id := c.Param("id")
+
+	for i, u := range Users {
+		if u.ID == id {
+			// t := [1, 431, 44, 546, 61]
+			// t[:2] == [1, 431]
+			// t[2 + 1:] == [546, 61]
+			// [1, 43, 546, 61]
+
+			Users = append(Users[:i], Users[i+1:]...)
+
+			c.JSON(200, gin.H{
+				"error": false,
+			})
+			return
+		}
+	}
 }
